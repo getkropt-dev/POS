@@ -52,6 +52,14 @@ const PosSalesDashboard: React.FC = () => {
 
   const change = Math.max(0, amountPaid - totals.total);
 
+  const cartRef = useRef(cart);
+  const showPaymentModalRef = useRef(showPaymentModal);
+
+  useEffect(() => {
+    cartRef.current = cart;
+    showPaymentModalRef.current = showPaymentModal;
+  }, [cart, showPaymentModal]);
+
   useEffect(() => {
     loadInitialData();
     // Focus search on mount
@@ -61,10 +69,10 @@ const PosSalesDashboard: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'F1') {
         e.preventDefault();
-        if (cart.length > 0) setShowPaymentModal(true);
+        if (cartRef.current.length > 0) setShowPaymentModal(true);
       }
       if (e.key === 'Escape') {
-        if (showPaymentModal) {
+        if (showPaymentModalRef.current) {
           setShowPaymentModal(false);
         } else {
           setSearchTerm('');
@@ -75,7 +83,7 @@ const PosSalesDashboard: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [cart, showPaymentModal]);
+  }, []);
 
   const loadInitialData = async () => {
     try {
@@ -139,25 +147,57 @@ const PosSalesDashboard: React.FC = () => {
     setter(numValue);
   };
 
-  const handleSearch = async (term: string) => {
-    setSearchTerm(term);
-    // Intelligent search: if barcode-like (numbers), try to auto-add
-    if (term.length >= 8 && /^\d+$/.test(term)) {
-      const product = products.find(p => p.sku === term || p.barcode === term);
+  // Search state observer with debounce
+  useEffect(() => {
+    if (!searchTerm) {
+      productService.getProducts().then(setProducts).catch(console.error);
+      return;
+    }
+
+    if (searchTerm.length >= 8 && /^\d+$/.test(searchTerm)) {
+      const product = products.find(p => p.sku === searchTerm || p.barcode === searchTerm);
       if (product) {
         addToCart(product);
         setSearchTerm('');
         return;
       }
     }
-    
-    // Regular search
-    try {
-      const results = await productService.getProducts(term);
-      setProducts(results);
-    } catch (error) {
-      console.error('Search error:', error);
-    }
+
+    const delaySearch = setTimeout(async () => {
+      try {
+        const results = await productService.getProducts(searchTerm);
+        setProducts(results);
+      } catch (error) {
+        console.error('Search error:', error);
+      }
+    }, 300);
+
+    return () => clearTimeout(delaySearch);
+  }, [searchTerm]);
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+  };
+
+  const calculateLineItem = (
+    basePrice: number, 
+    baseCost: number, 
+    taxRate: number, 
+    quantity: number, 
+    existingData: Partial<SaleDetail>
+  ): SaleDetail => {
+    const subtotal = basePrice * quantity;
+    const tax = subtotal * (taxRate / 100);
+    const total = subtotal + tax;
+
+    return {
+      ...existingData,
+      quantity,
+      line_subtotal: subtotal,
+      line_tax: tax,
+      line_total: total,
+      line_profit: total - (baseCost * quantity)
+    } as SaleDetail;
   };
 
   const addToCart = (product: Product) => {
@@ -179,34 +219,22 @@ const PosSalesDashboard: React.FC = () => {
       if (existing) {
         return prev.map(item => 
           item.product_id === product.id 
-            ? calculateLineItem(product, item.quantity + 1)
+            ? calculateLineItem(item.unit_price, item.unit_cost, item.tax_rate_applied, item.quantity + 1, item)
             : item
         );
       }
-      return [...prev, calculateLineItem(product, 1)];
+      
+      const newBase = {
+        product_id: product.id,
+        product_name: product.name,
+        unit_price: Number(product.unit_price),
+        unit_cost: Number(product.unit_cost),
+        tax_rate_applied: Number(product.tax_rate || 0),
+        line_discount: 0
+      };
+      
+      return [...prev, calculateLineItem(newBase.unit_price, newBase.unit_cost, newBase.tax_rate_applied, 1, newBase)];
     });
-  };
-
-  const calculateLineItem = (product: Product, quantity: number): SaleDetail => {
-    const unitPrice = Number(product.unit_price);
-    const taxRate = Number(product.tax_rate || 0) / 100;
-    const subtotal = unitPrice * quantity;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
-
-    return {
-      product_id: product.id,
-      product_name: product.name,
-      quantity,
-      unit_price: unitPrice,
-      unit_cost: Number(product.unit_cost),
-      line_subtotal: subtotal,
-      tax_rate_applied: Number(product.tax_rate || 0),
-      line_tax: tax,
-      line_discount: 0,
-      line_total: total,
-      line_profit: total - (Number(product.unit_cost) * quantity)
-    };
   };
 
   const removeFromCart = (productId: number) => {
@@ -217,17 +245,24 @@ const PosSalesDashboard: React.FC = () => {
     setCart(prev => prev.map(item => {
       if (item.product_id === productId) {
         const newQty = Math.max(1, item.quantity + delta);
+        
+        // Find product only to check stock if possible
         const product = products.find(p => p.id === productId);
-        if (product) {
-          if (product.manages_inventory && delta > 0 && newQty > product.stock_quantity) {
-            showAlert({
-              title: 'Aviso de Inventario',
-              message: `El producto "${product.name}" no cuenta con suficiente inventario (Disponible: ${product.stock_quantity}, Solicitado: ${newQty}). La venta generará un saldo negativo en el inventario.`,
-              type: 'warning'
-            });
-          }
-          return calculateLineItem(product, newQty);
+        if (product && product.manages_inventory && delta > 0 && newQty > product.stock_quantity) {
+          showAlert({
+            title: 'Aviso de Inventario',
+            message: `El producto "${product.name}" no cuenta con suficiente inventario (Disponible: ${product.stock_quantity}, Solicitado: ${newQty}). La venta generará un saldo negativo en el inventario.`,
+            type: 'warning'
+          });
         }
+        
+        return calculateLineItem(
+          item.unit_price, 
+          item.unit_cost, 
+          item.tax_rate_applied, 
+          newQty, 
+          item
+        );
       }
       return item;
     }));
