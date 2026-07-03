@@ -378,7 +378,7 @@ const PosSalesDashboard: React.FC = () => {
             cart.map(item => (
               <div key={item.product_id} className="pos-cart-item">
                 <div className="pos-item-info">
-                  <div className="font-semibold text-sm">{item.product_name}</div>
+                  <div className="font-semibold text-sm truncate">{item.product_name}</div>
                   <div className="text-xs text-gray-500">₡{item.unit_price.toLocaleString()} c/u</div>
                 </div>
                 <div className="pos-item-qty-controls">

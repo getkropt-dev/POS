@@ -50,9 +50,16 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: 1rem;
   overflow: hidden;
   min-width: 0; /* Important for flex child with overflow */
+}
+
+@media (min-width: 1024px) {
+  .pos-products-panel {
+    flex: 2;
+    padding: 1.5rem;
+  }
 }
 
 .pos-search-wrapper {
@@ -137,7 +144,7 @@
 .pos-product-card {
   background: var(--pos-surface);
   border-radius: 1.25rem;
-  padding: 1.25rem;
+  padding: 1rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
@@ -145,7 +152,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 180px;
+  height: 100%;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
@@ -176,32 +183,38 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 -4px 15px -3px rgba(0, 0, 0, 0.05);
-  max-height: 50vh;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 @media (min-width: 1024px) {
   .pos-cart-panel {
-    width: 420px;
+    width: auto;
+    flex: 1;
+    min-width: 320px;
+    max-width: 450px;
     border-top: none;
     border-left: 1px solid var(--pos-border);
     box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.05);
-    max-height: 100%;
   }
 }
 
 .pos-cart-header {
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--pos-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--pos-surface);
+  flex-shrink: 0;
 }
 
 .pos-cart-items {
   flex: 1;
   overflow-y: auto;
   padding: 1rem 1.5rem;
+  min-height: 0; /* Critical fix for flex scrolling */
 }
 
 .pos-cart-item {
@@ -214,6 +227,7 @@
 
 .pos-item-info {
   flex: 1;
+  min-width: 0;
 }
 
 .pos-item-qty-controls {
@@ -243,9 +257,10 @@
 }
 
 .pos-cart-footer {
-  padding: 2rem;
+  padding: 1.25rem 1.5rem;
   background: var(--pos-surface-muted);
   border-top: 1px solid var(--pos-border);
+  flex-shrink: 0;
 }
 
 .pos-summary-row {
