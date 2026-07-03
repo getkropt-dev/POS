@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -13,10 +13,8 @@ import {
   TrendingUp,
   CreditCard,
   User,
-  Shield,
   Settings,
   ChevronDown,
-  AlertTriangle,
   Info
 } from 'lucide-react';
 import UserEditModal from '../users/UserEditModal';

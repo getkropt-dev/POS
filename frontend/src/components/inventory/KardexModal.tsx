@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, History, Loader2, ArrowUpRight, ArrowDownRight, User, Calendar, Tag } from 'lucide-react';
-import type { Product, InventoryMovement } from '../../types/sales';
+import type { Product } from '../../types/sales';
 import { inventoryService } from '../../services/inventoryService';
 
 interface KardexModalProps {
