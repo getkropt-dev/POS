@@ -567,7 +567,10 @@ const PosSalesDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name.toLowerCase().includes('sinpe') && (
+                      {(() => {
+                        const selectedMethodName = paymentMethods.find(m => m.id === selectedPaymentMethod)?.name.toLowerCase() || '';
+                        return selectedMethodName !== '' && !selectedMethodName.includes('sinpe') && !selectedMethodName.includes('efectivo');
+                      })() && (
                         <div className="payment-input-group !mb-0">
                           <label className="payment-label">Referencia (Opcional):</label>
                           <input
