@@ -43,11 +43,7 @@ La lógica de negocio está organizada en módulos dentro de `src/modules`:
    Crea un archivo `.env` en la raíz del proyecto basándote en los siguientes campos necesarios:
    ```env
    PORT=3000
-   DB_HOST=127.0.0.1
-   DB_PORT=5432
-   DB_USER=tu_usuario
-   DB_PASSWORD=tu_password
-   DB_NAME=pos_db
+   DATABASE_URL="postgresql://usuario:password@host:6543/postgres"
    JWT_SECRET=tu_clave_secreta_super_segura
    ```
 
