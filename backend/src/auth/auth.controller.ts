@@ -7,10 +7,15 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() body: any) {
-    const user = await this.authService.validateUser(body.username, body.password);
-    if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas o usuario inactivo');
+    try {
+      const user = await this.authService.validateUser(body.username, body.password);
+      if (!user) {
+        throw new UnauthorizedException('Credenciales inválidas o usuario inactivo');
+      }
+      return this.authService.login(user);
+    } catch (error) {
+      console.error("ERROR REAL DEL LOGIN:", error);
+      throw error;
     }
-    return this.authService.login(user);
   }
 }
