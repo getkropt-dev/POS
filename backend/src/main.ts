@@ -7,13 +7,14 @@ async function bootstrap() {
   
   // Habilitar CORS para permitir peticiones desde el frontend (Vite)
   app.enableCors({
-    origin: 'http://localhost:5173', // O '*' para desarrollo
+    origin: '*', // Habilitado para todos temporalmente (o añade los dominios de producción y desarrollo)
     credentials: true,
   });
   
   // Registrar el filtro global para Postgres
   app.useGlobalFilters(new PgExceptionFilter());
   
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
 bootstrap();
