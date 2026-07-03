@@ -85,7 +85,7 @@ export default function Users() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/users?search=${search}`, {
+      const res = await fetch(`https://backend-pos-2zmm.onrender.com/users?search=${search}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -103,7 +103,7 @@ export default function Users() {
   const fetchRoles = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/users/roles`, {
+      const res = await fetch(`https://backend-pos-2zmm.onrender.com/users/roles`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -140,7 +140,7 @@ export default function Users() {
       async () => {
         try {
           const token = localStorage.getItem('token');
-          const res = await fetch(`http://localhost:3000/users/${id}`, {
+          const res = await fetch(`https://backend-pos-2zmm.onrender.com/users/${id}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` }
           });

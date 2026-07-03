@@ -145,8 +145,8 @@ export default function UserEditModal({ isOpen, onClose, user, roles, isAdmin, o
     try {
       const token = localStorage.getItem('token');
       const url = user 
-        ? `http://localhost:3000/users/${user.id}`
-        : `http://localhost:3000/users`;
+        ? `https://backend-pos-2zmm.onrender.com/users/${user.id}`
+        : `https://backend-pos-2zmm.onrender.com/users`;
       
       const method = user ? 'PUT' : 'POST';
       

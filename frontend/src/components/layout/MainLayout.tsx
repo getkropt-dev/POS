@@ -58,7 +58,7 @@ export default function MainLayout() {
   const fetchRoles = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/users/roles`, {
+      const res = await fetch(`https://backend-pos-2zmm.onrender.com/users/roles`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
