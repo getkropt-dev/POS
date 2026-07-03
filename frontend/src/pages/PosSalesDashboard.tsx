@@ -517,94 +517,104 @@ const PosSalesDashboard: React.FC = () => {
               </div>
             ) : (
               <>
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-6 shrink-0">
                   <h2 className="pos-modal-title mb-0">Completar Venta</h2>
                   <button onClick={() => setShowPaymentModal(false)} className="text-gray-400 hover:text-gray-600">
                     <X size={24} />
                   </button>
                 </div>
 
-                <div className="bg-[var(--pos-surface-muted)] p-4 rounded-xl mb-6 flex justify-between items-center border border-[var(--pos-border)]">
-                  <span className="opacity-70 font-medium">Total a Pagar:</span>
-                  <span className="text-3xl font-extrabold">₡{totals.total.toLocaleString()}</span>
-                </div>
+                <div className="flex-1 overflow-y-auto min-h-0 pr-2 pb-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* COLUMNA IZQUIERDA (Datos del Pago) */}
+                    <div className="flex flex-col gap-4">
+                      {cart.some(item => {
+                        const p = products.find(prod => prod.id === item.product_id);
+                        return p && p.manages_inventory && item.quantity > p.stock_quantity;
+                      }) && (
+                        <div className="p-3 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center gap-2 border border-amber-200/50">
+                          <AlertCircle size={20} className="shrink-0" />
+                          <span className="text-xs font-semibold text-left">
+                            Esta venta generará inventario negativo en algunos productos.
+                          </span>
+                        </div>
+                      )}
 
-                {cart.some(item => {
-                  const p = products.find(prod => prod.id === item.product_id);
-                  return p && p.manages_inventory && item.quantity > p.stock_quantity;
-                }) && (
-                  <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center gap-2 border border-amber-200/50">
-                    <AlertCircle size={20} className="shrink-0" />
-                    <span className="text-xs font-semibold text-left">
-                      Esta venta generará inventario negativo en algunos productos.
-                    </span>
+                      <div>
+                        <label className="payment-label block mb-2 text-sm font-semibold text-[var(--pos-text-secondary)]">Método de Pago:</label>
+                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                          {paymentMethods.map(method => (
+                            <button
+                              key={method.id}
+                              className={`flex-1 min-w-[100px] py-3 px-2 rounded-xl border font-bold transition-all ${
+                                selectedPaymentMethod === method.id 
+                                  ? 'bg-indigo-600 text-white border-indigo-600' 
+                                  : 'bg-[var(--pos-surface-muted)] text-[var(--pos-text)] border-[var(--pos-border)] hover:border-indigo-400'
+                              }`}
+                              onClick={() => setSelectedPaymentMethod(method.id)}
+                            >
+                              {method.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name.toLowerCase() !== 'efectivo' && (
+                        <div className="payment-input-group !mb-0">
+                          <label className="payment-label">Referencia (Opcional):</label>
+                          <input
+                            type="text"
+                            className="payment-input text-lg"
+                            placeholder="Ej. # de comprobante"
+                            value={referenceNumber}
+                            onChange={(e) => setReferenceNumber(e.target.value)}
+                          />
+                        </div>
+                      )}
+
+                      <div className="payment-input-group !mb-0">
+                        <label className="payment-label">Dinero Recibido:</label>
+                        <input
+                          type="text"
+                          className="payment-input"
+                          value={formatCurrency(amountPaid)}
+                          onChange={(e) => handleCurrencyInputChange(e, setAmountPaid)}
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleCheckout();
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* COLUMNA DERECHA (Cálculos y Denominaciones) */}
+                    <div className="flex flex-col gap-4 h-full">
+                      <div className="bg-[var(--pos-surface-muted)] p-4 rounded-xl flex justify-between items-center border border-[var(--pos-border)]">
+                        <span className="opacity-70 font-medium">Total a Pagar:</span>
+                        <span className="text-3xl font-extrabold">₡{totals.total.toLocaleString()}</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {[500, 1000, 2000, 5000, 10000, 20000].map(val => (
+                          <button 
+                            key={val}
+                            className="p-3 border border-[var(--pos-border)] rounded-lg hover:bg-[var(--pos-surface-muted)] font-semibold transition-colors text-sm sm:text-base"
+                            onClick={() => setAmountPaid(prev => (prev || 0) + val)}
+                          >
+                            +₡{val.toLocaleString()}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="change-display !mb-0 mt-auto">
+                        <div className="change-label">Cambio (Vuelto):</div>
+                        <div className="change-value">₡{change.toLocaleString()}</div>
+                      </div>
+                    </div>
                   </div>
-                )}
-
-                <div className="mb-4">
-                  <label className="payment-label block mb-2 text-sm font-semibold text-[var(--pos-text-secondary)]">Método de Pago:</label>
-                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                    {paymentMethods.map(method => (
-                      <button
-                        key={method.id}
-                        className={`flex-1 min-w-[100px] py-3 px-2 rounded-xl border font-bold transition-all ${
-                          selectedPaymentMethod === method.id 
-                            ? 'bg-indigo-600 text-white border-indigo-600' 
-                            : 'bg-[var(--pos-surface-muted)] text-[var(--pos-text)] border-[var(--pos-border)] hover:border-indigo-400'
-                        }`}
-                        onClick={() => setSelectedPaymentMethod(method.id)}
-                      >
-                        {method.name}
-                      </button>
-                    ))}
-                  </div>
                 </div>
 
-                {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name.toLowerCase() !== 'efectivo' && (
-                  <div className="payment-input-group mb-4">
-                    <label className="payment-label">Referencia (Opcional):</label>
-                    <input
-                      type="text"
-                      className="payment-input text-lg"
-                      placeholder="Ej. # de comprobante"
-                      value={referenceNumber}
-                      onChange={(e) => setReferenceNumber(e.target.value)}
-                    />
-                  </div>
-                )}
-
-                <div className="payment-input-group">
-                  <label className="payment-label">Dinero Recibido:</label>
-                  <input
-                    type="text"
-                    className="payment-input"
-                    value={formatCurrency(amountPaid)}
-                    onChange={(e) => handleCurrencyInputChange(e, setAmountPaid)}
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleCheckout();
-                    }}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6">
-                  {[500, 1000, 2000, 5000, 10000, 20000].map(val => (
-                    <button 
-                      key={val}
-                      className="p-2 border border-[var(--pos-border)] rounded-lg hover:bg-[var(--pos-surface-muted)] font-semibold transition-colors text-sm sm:text-base"
-                      onClick={() => setAmountPaid(prev => (prev || 0) + val)}
-                    >
-                      +₡{val.toLocaleString()}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="change-display">
-                  <div className="change-label">Cambio (Vuelto):</div>
-                  <div className="change-value">₡{change.toLocaleString()}</div>
-                </div>
-
-                <div className="flex gap-4">
+                <div className="flex gap-4 mt-6 shrink-0">
                   <button 
                     className="flex-1 p-4 rounded-xl bg-[var(--pos-surface-muted)] font-bold hover:opacity-80 transition-all border border-[var(--pos-border)]"
                     onClick={() => setShowPaymentModal(false)}
