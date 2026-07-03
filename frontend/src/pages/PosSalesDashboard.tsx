@@ -97,7 +97,15 @@ const PosSalesDashboard: React.FC = () => {
 
       if (prods.status === 'fulfilled') setProducts(prods.value);
       if (methods.status === 'fulfilled') {
-        const activeMethods = methods.value.filter(m => m.is_active);
+        const activeMethods = methods.value
+          .filter(m => m.is_active && (m.name.toLowerCase().includes('efectivo') || m.name.toLowerCase().includes('sinpe')))
+          .sort((a, b) => {
+            const aIsEfectivo = a.name.toLowerCase().includes('efectivo');
+            const bIsEfectivo = b.name.toLowerCase().includes('efectivo');
+            if (aIsEfectivo && !bIsEfectivo) return -1;
+            if (!aIsEfectivo && bIsEfectivo) return 1;
+            return 0;
+          });
         setPaymentMethods(activeMethods);
         if (activeMethods.length > 0) setSelectedPaymentMethod(activeMethods[0].id);
       }
@@ -339,7 +347,7 @@ const PosSalesDashboard: React.FC = () => {
           <input
             ref={searchInputRef}
             type="text"
-            className="pos-search-input pl-10"
+            className="pos-search-input"
             placeholder="Buscar por nombre o escanear código... (Enter para agregar)"
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
@@ -559,7 +567,7 @@ const PosSalesDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name.toLowerCase() !== 'efectivo' && (
+                      {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name.toLowerCase().includes('sinpe') && (
                         <div className="payment-input-group !mb-0">
                           <label className="payment-label">Referencia (Opcional):</label>
                           <input
