@@ -1,73 +1,65 @@
-# React + TypeScript + Vite
+# Meybrasu POS 🛒
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Meybrasu POS** es una solución integral de Punto de Venta diseñada para ofrecer una gestión eficiente, segura y escalable de negocios comerciales. El sistema combina una interfaz de usuario moderna con un motor de backend robusto y una base de datos optimizada para el alto rendimiento.
 
-Currently, two official plugins are available:
+## 🏗️ Arquitectura del Sistema
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El proyecto está dividido en tres pilares fundamentales:
 
-## React Compiler
+### 1. Frontend (Cliente) 💻
+Ubicado en `/frontend`, es una aplicación de página única (SPA) moderna.
+- **Tecnologías:** React 19, Vite, TypeScript, Tailwind CSS 4.
+- **Características:**
+  - Dashboard interactivo con gráficos (Recharts).
+  - Interfaz responsiva y minimalista.
+  - Gestión de usuarios y sesiones.
+  - Módulos dinámicos para Ventas, Inventario y Clientes (en desarrollo).
+  - Iconografía premium con Lucide React.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 2. Backend (Servidor API) ⚙️
+Ubicado en `/backend`, es el núcleo de procesamiento del sistema.
+- **Tecnologías:** NestJS, TypeScript, Knex.js.
+- **Características:**
+  - Arquitectura modular (Auth, Users, Sales, Products, etc.).
+  - Seguridad mediante JWT y Passport.js.
+  - Validación de datos y manejo de errores centralizado.
+  - Documentación clara y estructura escalable.
 
-## Expanding the ESLint configuration
+### 3. Base de Datos (Persistencia) 🗄️
+Definida en `schema.sql`, utiliza PostgreSQL con lógica avanzada.
+- **Motor:** PostgreSQL.
+- **Características de alto rendimiento:**
+  - **Triggers Automáticos:** El inventario se actualiza automáticamente al registrar ventas o compras.
+  - **Auditoría:** Registro automático de cambios en tablas críticas (`audit_log`).
+  - **Integridad Financiera:** Recálculo automático de totales, impuestos y balances de clientes.
+  - **Procedimientos Almacenados:** Lógica compleja (como la anulación de ventas) ejecutada directamente en el motor para mayor velocidad y consistencia.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Inicio Rápido
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Requisitos Previos
+- Node.js (v18+)
+- PostgreSQL (v14+)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Instalación General
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clonar el repositorio.**
+2. **Configurar la Base de Datos:**
+   - Crea una base de datos en PostgreSQL.
+   - Ejecuta el script `schema.sql` para crear las tablas, índices y triggers.
+3. **Configurar el Backend:**
+   - Entra en `/backend`, instala con `npm install`.
+   - Configura el archivo `.env` (ver `backend/README.md`).
+   - Inicia con `npm run start:dev`.
+4. **Configurar el Frontend:**
+   - Entra en `/frontend`, instala con `npm install`.
+   - Inicia con `npm run dev`.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Módulos Principales
+- **Ventas (POS):** Facturación rápida y múltiples métodos de pago.
+- **Inventario (Kardex):** Seguimiento detallado de entradas y salidas.
+- **Compras:** Gestión de proveedores y abastecimiento.
+- **Caja (Cash Sessions):** Control de arqueos y flujos de efectivo.
+- **Clientes:** CRM integrado con gestión de límites de crédito.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+Desarrollado para potenciar la eficiencia operativa.
