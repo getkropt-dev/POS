@@ -31,6 +31,7 @@ const PosSalesDashboard: React.FC = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [amountPaid, setAmountPaid] = useState<number>(0);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<number | null>(null);
+  const [referenceNumber, setReferenceNumber] = useState<string>('');
   const [processingSale, setProcessingSale] = useState(false);
   const [saleSuccess, setSaleSuccess] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
@@ -88,8 +89,9 @@ const PosSalesDashboard: React.FC = () => {
 
       if (prods.status === 'fulfilled') setProducts(prods.value);
       if (methods.status === 'fulfilled') {
-        setPaymentMethods(methods.value);
-        if (methods.value.length > 0) setSelectedPaymentMethod(methods.value[0].id);
+        const activeMethods = methods.value.filter(m => m.is_active);
+        setPaymentMethods(activeMethods);
+        if (activeMethods.length > 0) setSelectedPaymentMethod(activeMethods[0].id);
       }
       if (sessionData.status === 'fulfilled') {
         setCashSession(sessionData.value.session);
@@ -247,7 +249,8 @@ const PosSalesDashboard: React.FC = () => {
           {
             payment_method_id: selectedPaymentMethod,
             payment_method_name: paymentMethods.find(m => m.id === selectedPaymentMethod)?.name || '',
-            amount: totals.total
+            amount: totals.total,
+            reference_number: referenceNumber.trim() || undefined
           }
         ]
       };
@@ -259,6 +262,7 @@ const PosSalesDashboard: React.FC = () => {
         setShowPaymentModal(false);
         setSaleSuccess(false);
         setAmountPaid(0);
+        setReferenceNumber('');
         setSearchTerm('');
         searchInputRef.current?.focus();
       }, 2000);
@@ -499,6 +503,38 @@ const PosSalesDashboard: React.FC = () => {
                     <span className="text-xs font-semibold text-left">
                       Esta venta generará inventario negativo en algunos productos.
                     </span>
+                  </div>
+                )}
+
+                <div className="mb-4">
+                  <label className="payment-label block mb-2 text-sm font-semibold text-[var(--pos-text-secondary)]">Método de Pago:</label>
+                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    {paymentMethods.map(method => (
+                      <button
+                        key={method.id}
+                        className={`flex-1 min-w-[100px] py-3 px-2 rounded-xl border font-bold transition-all ${
+                          selectedPaymentMethod === method.id 
+                            ? 'bg-indigo-600 text-white border-indigo-600' 
+                            : 'bg-[var(--pos-surface-muted)] text-[var(--pos-text)] border-[var(--pos-border)] hover:border-indigo-400'
+                        }`}
+                        onClick={() => setSelectedPaymentMethod(method.id)}
+                      >
+                        {method.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name.toLowerCase() !== 'efectivo' && (
+                  <div className="payment-input-group mb-4">
+                    <label className="payment-label">Referencia (Opcional):</label>
+                    <input
+                      type="text"
+                      className="payment-input text-lg"
+                      placeholder="Ej. # de comprobante"
+                      value={referenceNumber}
+                      onChange={(e) => setReferenceNumber(e.target.value)}
+                    />
                   </div>
                 )}
 
