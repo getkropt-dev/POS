@@ -32,7 +32,8 @@
 .pos-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px); /* Adjust for 80px header in MainLayout */
+  /* Adjust for 80px header AND 1.5rem top/bottom padding (3rem total) from MainLayout */
+  height: calc(100vh - 80px - 3rem);
   background-color: var(--pos-bg);
   color: var(--pos-text);
   overflow: hidden;
@@ -41,6 +42,8 @@
 @media (min-width: 1024px) {
   .pos-container {
     flex-direction: row;
+    /* Adjust for 80px header AND 2rem top/bottom padding (4rem total) from MainLayout */
+    height: calc(100vh - 80px - 4rem);
   }
 }
 

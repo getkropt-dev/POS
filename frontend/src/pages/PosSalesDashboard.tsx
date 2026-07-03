@@ -292,7 +292,7 @@ const PosSalesDashboard: React.FC = () => {
   }, [products, selectedCategoryId]);
 
   return (
-    <div className="pos-container" style={{ height: 'calc(100vh - 80px)' }}>
+    <div className="pos-container">
       {/* Left Panel: Product Selection */}
       <div className="pos-products-panel">
         <div className="pos-search-wrapper">
