@@ -57,7 +57,7 @@ const KardexModal: React.FC<KardexModalProps> = ({ isOpen, onClose, product }) =
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md" onClick={onClose}></div>
       
-      <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-2xl relative z-10 shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden transform animate-in fade-in zoom-in duration-200">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-2xl relative z-10 shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden transform animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="p-6 border-b border-slate-100 dark:border-white/5 bg-gradient-to-r from-slate-500/5 to-indigo-500/5">
           <div className="flex justify-between items-center mb-1">
@@ -72,7 +72,7 @@ const KardexModal: React.FC<KardexModalProps> = ({ isOpen, onClose, product }) =
           <p className="text-sm text-slate-500 font-medium">Producto: {product.name} ({product.sku})</p>
         </div>
 
-        <div className="max-h-[60vh] overflow-y-auto p-0">
+        <div className="overflow-y-auto p-0 flex-1">
           {isLoading ? (
             <div className="py-20 flex flex-col items-center justify-center">
               <Loader2 className="animate-spin text-indigo-500 mb-2" />

@@ -316,7 +316,8 @@ export default function SaleDetail() {
                     <p className="text-sm text-slate-700 dark:text-slate-300 mb-3"><span className="font-semibold">Motivo:</span> {ret.reason}</p>
                     
                     <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-100 dark:border-slate-800 overflow-hidden">
-                      <table className="w-full text-left text-xs">
+                      <div className="overflow-x-auto w-full">
+                        <table className="w-full text-left text-xs">
                         <thead className="bg-slate-100 dark:bg-slate-800 text-slate-500">
                           <tr>
                             <th className="p-2">Producto</th>
@@ -333,7 +334,8 @@ export default function SaleDetail() {
                             </tr>
                           ))}
                         </tbody>
-                      </table>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -410,7 +412,8 @@ export default function SaleDetail() {
             
             <div className="p-6 overflow-y-auto flex-1">
               <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
-                <table className="w-full text-left">
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left">
                   <thead className="bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs uppercase">
                     <tr>
                       <th className="p-3">Producto</th>
@@ -442,7 +445,8 @@ export default function SaleDetail() {
                       );
                     })}
                   </tbody>
-                </table>
+                  </table>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

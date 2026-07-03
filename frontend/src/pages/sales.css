@@ -31,11 +31,19 @@
 /* Base Container */
 .pos-container {
   display: flex;
+  flex-direction: column;
   height: calc(100vh - 80px); /* Adjust for 80px header in MainLayout */
   background-color: var(--pos-bg);
   color: var(--pos-text);
   overflow: hidden;
 }
+
+@media (min-width: 1024px) {
+  .pos-container {
+    flex-direction: row;
+  }
+}
+
 
 /* Left Panel: Products */
 .pos-products-panel {
@@ -113,11 +121,17 @@
 .pos-product-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 1rem;
   overflow-y: auto;
   padding-right: 0.5rem;
   min-height: 0; /* Critical fix for flex scrolling */
+}
+
+@media (min-width: 768px) {
+  .pos-product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
 
 .pos-product-card {
@@ -156,12 +170,23 @@
 
 /* Right Panel: Cart */
 .pos-cart-panel {
-  width: 420px;
+  width: 100%;
   background: var(--pos-surface);
-  border-left: 1px solid var(--pos-border);
+  border-top: 1px solid var(--pos-border);
   display: flex;
   flex-direction: column;
-  box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -4px 15px -3px rgba(0, 0, 0, 0.05);
+  max-height: 50vh;
+}
+
+@media (min-width: 1024px) {
+  .pos-cart-panel {
+    width: 420px;
+    border-top: none;
+    border-left: 1px solid var(--pos-border);
+    box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.05);
+    max-height: 100%;
+  }
 }
 
 .pos-cart-header {
@@ -251,8 +276,14 @@
 
 .pos-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
+}
+
+@media (min-width: 480px) {
+  .pos-actions {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .pos-btn {

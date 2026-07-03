@@ -41,7 +41,7 @@ export default function Login() {
     <div className="min-h-screen w-full flex bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans">
 
       {/* Sección Izquierda - Formulario */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 relative z-10">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-12 lg:p-24 relative z-10">
 
         {/* Blob de fondo decorativo para modo claro */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 dark:hidden pointer-events-none">
@@ -49,7 +49,7 @@ export default function Login() {
           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-200/50 blur-3xl mix-blend-multiply"></div>
         </div>
 
-        <div className="w-full max-w-md space-y-8 bg-white/60 dark:bg-slate-900/50 backdrop-blur-xl p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-white/40 dark:border-white/5 relative">
+        <div className="w-full max-w-md space-y-8 bg-white/60 dark:bg-slate-900/50 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-white/40 dark:border-white/5 relative">
 
           {/* Logo animado */}
           <div className="text-center">

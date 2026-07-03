@@ -516,11 +516,11 @@ const PosSalesDashboard: React.FC = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 mb-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6">
                   {[500, 1000, 2000, 5000, 10000, 20000].map(val => (
                     <button 
                       key={val}
-                      className="p-2 border border-[var(--pos-border)] rounded-lg hover:bg-[var(--pos-surface-muted)] font-semibold transition-colors"
+                      className="p-2 border border-[var(--pos-border)] rounded-lg hover:bg-[var(--pos-surface-muted)] font-semibold transition-colors text-sm sm:text-base"
                       onClick={() => setAmountPaid(prev => (prev || 0) + val)}
                     >
                       +₡{val.toLocaleString()}
