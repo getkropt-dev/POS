@@ -18,19 +18,24 @@ export class ProductsService {
   }
 
   private mapToDatabase(data: any) {
-    const mapped: any = { ...data };
+    // Definir explícitamente los campos permitidos para la base de datos
+    const allowedFields = [
+      'name', 'sku', 'barcode', 'description', 'category_id', 'supplier_id',
+      'manages_inventory', 'has_tax', 'is_active'
+    ];
+    
+    const mapped: any = {};
+    for (const field of allowedFields) {
+      if (data[field] !== undefined) {
+        mapped[field] = data[field];
+      }
+    }
+    
     if (data.unit_price !== undefined) mapped.selling_price = data.unit_price;
     if (data.unit_cost !== undefined) mapped.current_cost = data.unit_cost;
     if (data.stock_quantity !== undefined) mapped.stock = data.stock_quantity;
     if (data.tax_rate !== undefined) mapped.tax_percentage = data.tax_rate;
     if (data.min_stock !== undefined) mapped.min_stock_alert = data.min_stock;
-    
-    // Remove frontend-only fields before sending to DB
-    delete mapped.unit_price;
-    delete mapped.unit_cost;
-    delete mapped.stock_quantity;
-    delete mapped.tax_rate;
-    delete mapped.min_stock;
     
     return mapped;
   }
@@ -41,7 +46,8 @@ export class ProductsService {
     if (searchQuery) {
       query.andWhere(q => {
         q.where('name', 'ilike', `%${searchQuery}%`)
-         .orWhere('sku', 'ilike', `%${searchQuery}%`);
+         .orWhere('sku', 'ilike', `%${searchQuery}%`)
+         .orWhere('barcode', 'ilike', `%${searchQuery}%`);
       });
     }
 

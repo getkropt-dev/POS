@@ -109,6 +109,7 @@ CREATE TABLE customer_payments (
 CREATE TABLE products (
     id                SERIAL PRIMARY KEY,
     sku               VARCHAR(50)   UNIQUE,
+    barcode           VARCHAR(100)  UNIQUE,
     name              VARCHAR(200)  NOT NULL,
     description       TEXT,
     category_id       INTEGER       REFERENCES categories(id),
@@ -341,6 +342,7 @@ CREATE INDEX idx_sale_payments_sale    ON sale_payments(sale_id);
 CREATE INDEX idx_products_supplier     ON products(supplier_id) WHERE is_active = TRUE;
 CREATE INDEX idx_products_category     ON products(category_id) WHERE is_active = TRUE;
 CREATE INDEX idx_products_sku          ON products(sku) WHERE sku IS NOT NULL;
+CREATE INDEX idx_products_barcode      ON products(barcode) WHERE barcode IS NOT NULL;
 CREATE INDEX idx_products_low_stock    ON products(stock) WHERE manages_inventory = TRUE AND is_active = TRUE;
 CREATE INDEX idx_products_name_trgm    ON products USING gin(name gin_trgm_ops);
 

@@ -18,7 +18,7 @@ export default function SalesProfitReport() {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const res = await fetchWithAuth('/categories');
+        const res = await fetchWithAuth('/catalogs/categories');
         setCategories(Array.isArray(res) ? res : []);
       } catch (err) {
         console.error('Error loading categories:', err);
