@@ -30,7 +30,9 @@ export default function ExecutiveSalesReport() {
     setLoading(true);
     setError(null);
     try {
-      const query = `?startDate=${startDate}&endDate=${endDate}`;
+      const startIso = new Date(`${startDate}T00:00:00`).toISOString();
+      const endIso = new Date(`${endDate}T23:59:59.999`).toISOString();
+      const query = `?startDate=${startIso}&endDate=${endIso}`;
       const res = await fetchWithAuth(`/reports/executive-sales${query}`);
       setData(res);
     } catch (err: any) {

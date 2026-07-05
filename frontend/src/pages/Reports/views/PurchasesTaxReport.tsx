@@ -19,8 +19,8 @@ export default function PurchasesTaxReport() {
     try {
       let query = '';
       const params = new URLSearchParams();
-      if (startDate) params.append('startDate', startDate);
-      if (endDate) params.append('endDate', endDate);
+      if (startDate) params.append('startDate', new Date(`${startDate}T00:00:00`).toISOString());
+      if (endDate) params.append('endDate', new Date(`${endDate}T23:59:59.999`).toISOString());
       if (period) params.append('period', period);
       if (includeInDeclaration !== '') params.append('includeInDeclaration', includeInDeclaration);
       

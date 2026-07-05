@@ -139,7 +139,7 @@ CREATE TABLE purchase_invoices (
     id SERIAL PRIMARY KEY,
     supplier_id INTEGER NOT NULL REFERENCES suppliers(id),
     invoice_number VARCHAR(50) NOT NULL, -- Número de factura del proveedor
-    purchase_date DATE NOT NULL,
+    purchase_date TIMESTAMPTZ NOT NULL,
     received_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     
     -- Totales desglosados

@@ -67,9 +67,7 @@ export class ReportsService {
       query.where('sale_date', '>=', startDate);
     }
     if (endDate) {
-      // Agregar 23:59:59 si se envia solo la fecha para incluir todo el dia
-      const endDateTime = endDate.includes('T') ? endDate : `${endDate} 23:59:59`;
-      query.where('sale_date', '<=', endDateTime);
+      query.where('sale_date', '<=', endDate);
     }
     if (categoryId) {
       query.where('category_id', categoryId);
@@ -87,8 +85,7 @@ export class ReportsService {
       query.where('open_date', '>=', startDate);
     }
     if (endDate) {
-      const endDateTime = endDate.includes('T') ? endDate : `${endDate} 23:59:59`;
-      query.where('open_date', '<=', endDateTime);
+      query.where('open_date', '<=', endDate);
     }
 
     return await query;
@@ -103,8 +100,7 @@ export class ReportsService {
       query.where('movement_date', '>=', startDate);
     }
     if (endDate) {
-      const endDateTime = endDate.includes('T') ? endDate : `${endDate} 23:59:59`;
-      query.where('movement_date', '<=', endDateTime);
+      query.where('movement_date', '<=', endDate);
     }
 
     return await query;
@@ -119,8 +115,7 @@ export class ReportsService {
       query.where('purchase_date', '>=', startDate);
     }
     if (endDate) {
-      const endDateTime = endDate.includes('T') ? endDate : `${endDate} 23:59:59`;
-      query.where('purchase_date', '<=', endDateTime);
+      query.where('purchase_date', '<=', endDate);
     }
     if (period) {
       query.where('assigned_tax_period', period);
@@ -141,8 +136,7 @@ export class ReportsService {
       query.where('payment_date', '>=', startDate);
     }
     if (endDate) {
-      const endDateTime = endDate.includes('T') ? endDate : `${endDate} 23:59:59`;
-      query.where('payment_date', '<=', endDateTime);
+      query.where('payment_date', '<=', endDate);
     }
     if (customerId) {
       query.where('customer_id', customerId);
@@ -153,8 +147,8 @@ export class ReportsService {
 
   async getExecutiveSalesReport(startDate?: string, endDate?: string) {
     // 1. Set default dates to today if not provided
-    const start = startDate ? `${startDate} 00:00:00` : `${new Date().toISOString().slice(0,10)} 00:00:00`;
-    const end = endDate ? (endDate.includes('T') ? endDate : `${endDate} 23:59:59`) : `${new Date().toISOString().slice(0,10)} 23:59:59`;
+    const start = startDate || new Date(new Date().setHours(0,0,0,0)).toISOString();
+    const end = endDate || new Date(new Date().setHours(23,59,59,999)).toISOString();
 
     // 2. Summary (Total Sales and Total Profit)
     const summaryResult = await this.knex('sales')

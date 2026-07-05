@@ -32,8 +32,14 @@ export default function SalesProfitReport() {
     setError(null);
     try {
       let query = '';
-      if (startDate) query += `?startDate=${startDate}`;
-      if (endDate) query += `${query ? '&' : '?'}endDate=${endDate}`;
+      if (startDate) {
+        const startIso = new Date(`${startDate}T00:00:00`).toISOString();
+        query += `?startDate=${startIso}`;
+      }
+      if (endDate) {
+        const endIso = new Date(`${endDate}T23:59:59.999`).toISOString();
+        query += `${query ? '&' : '?'}endDate=${endIso}`;
+      }
       if (categoryId) query += `${query ? '&' : '?'}categoryId=${categoryId}`;
       
       const res = await fetchWithAuth(`/reports/sales-profits${query}`);

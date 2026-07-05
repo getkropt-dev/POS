@@ -17,8 +17,14 @@ export default function CashSessionsReport() {
     setError(null);
     try {
       let query = '';
-      if (startDate) query += `?startDate=${startDate}`;
-      if (endDate) query += `${query ? '&' : '?'}endDate=${endDate}`;
+      if (startDate) {
+        const startIso = new Date(`${startDate}T00:00:00`).toISOString();
+        query += `?startDate=${startIso}`;
+      }
+      if (endDate) {
+        const endIso = new Date(`${endDate}T23:59:59.999`).toISOString();
+        query += `${query ? '&' : '?'}endDate=${endIso}`;
+      }
       
       const res = await fetchWithAuth(`/reports/cash-sessions${query}`);
       setData(Array.isArray(res) ? res : []);
